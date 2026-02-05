@@ -3,7 +3,7 @@ from excel.excel_handler import save_stock, update_sheet_list
 from plot.dashboard import run_console_dashboard
 
 
-def main():                                                                             # Defining main function to ask for stock symbol 
+def main():                                                                            # Defining main function to ask for stock symbol 
     symbol = input("Enter stock symbol (e.g., RELIANCE.NS): ").strip().upper()          # Making input not be case sensitive   
 
     df = fetch_stock(symbol)                                                            # Fetch stock using yfinance (from data_loader.py)
