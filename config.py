@@ -1,0 +1,7 @@
+# config.py
+
+SIM_DAYS = 252
+SIMULATIONS = 10_000
+CONFIDENCE_LEVEL = 0.95
+EXCEL_PATH = "stocks.xlsx"
+MIN_WINDOW_DAYS = 30

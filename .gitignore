@@ -1,1 +1,18 @@
-/~$stocks.xlsx
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.cpython-*
+
+# Excel outputs
+stocks.xlsx
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Excel temp files
+~$*.xlsx
+
+# Generated Excel outputs
+stocks.xlsx
