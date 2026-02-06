@@ -55,6 +55,9 @@ This is the core random variable we are statistically analyzing
 
 Stock Market Statistical Analysis/
 │
+├── app.py
+|
+|
 ├── main.py                  # Orchestrator
 │
 ├── data/
@@ -70,7 +73,9 @@ Stock Market Statistical Analysis/
 │   ├── distribution_plots.py
 │   ├── monte_carlo_plots.py
 │   └── dashboard.py         # Visualization orchestrator
-│
+│   └── report_data.py
+|
+|
 ├── excel/
 │   └── excel_handler.py     # Persistence & Excel dashboard support
 │
