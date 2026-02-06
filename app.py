@@ -14,38 +14,38 @@ from plot.distribution_plots import plot_return_distributions
 from plot.monte_carlo_plots import plot_monte_carlo_paths
 
 
-st.set_page_config(page_title="Stock Risk Report", layout="centered")
+st.set_page_config(page_title="Stock Risk Report", layout="centered")                           # Set page title
 
-############################### STREAMLIT DASHBOARD APP ###############################
+############################### STREAMLIT DASHBOARD APP ##############################
 @st.cache_data
 def load_stock(symbol):                                         # Loads stock
     return fetch_stock(symbol)
 
 
-if "range_days" not in st.session_state:                        # 
-    st.session_state.range_days = 365
+if "range_days" not in st.session_state:                        # Set default time range
+    st.session_state.range_days = 365                           
 
 
 st.title("📄 Stock Risk & Performance Report")
 
-symbol = st.text_input("Enter Stock Symbol", value="RELIANCE.NS")
+symbol = st.text_input("Enter Stock Symbol", value="RELIANCE.NS")                      # User input
 
-if st.button("Generate Report", type="primary"):
-    st.session_state.run = True
+if st.button("Generate Report", type="primary"):                                         # Generate report
+    st.session_state.run = True                                                 
 
-if "run" in st.session_state and st.session_state.run:
+if "run" in st.session_state and st.session_state.run:                                  # Run report
     
-    df = load_stock(symbol)
-    if df is None or df.empty:
+    df = load_stock(symbol)                                                             # Load stock
+    if df is None or df.empty:                                                          # Exception handling
         st.error(f" Invalid symbol or no data found: {symbol}")
         st.stop()       
     
-    max_date = df["Date"].max()
+    max_date = df["Date"].max()                                                         
     min_date = df["Date"].min()
 
     st.subheader("Time Range")
 
-    ranges = {
+    ranges = {                                                          # Time ranges for report
         "1M": 30,
         "3M": 90,
         "6M": 180,
@@ -57,30 +57,30 @@ if "run" in st.session_state and st.session_state.run:
         "Max": None,
     }
 
-    cols = st.columns(len(ranges))
+    cols = st.columns(len(ranges))                                          # Time range buttons
 
-    for col, (label, days) in zip(cols, ranges.items()):
+    for col, (label, days) in zip(cols, ranges.items()):                                    
         if col.button(label):
             st.session_state.range_days = days
 
 
-    if st.session_state.range_days is None:
+    if st.session_state.range_days is None:                                                 # Set default time range
         start_date = min_date
     else:
-        start_date = max_date - timedelta(days=st.session_state.range_days)
+        start_date = max_date - timedelta(days=st.session_state.range_days)                             
 
     end_date = max_date
 
-    st.caption(f"📌 Active range: {label}")
+    st.caption(f"📌 Active range: {label}")                     
 
 
     st.info(
-        f"Selected range: {start_date.date()} → {end_date.date()}"
+        f"Selected range: {start_date.date()} → {end_date.date()}"                              # Display selected time range
     )
 
     range_label = (
         "Max"
-        if st.session_state.range_days is None
+        if st.session_state.range_days is None                                          # Set default time range
         else f"Last {st.session_state.range_days} days"
     )
 
@@ -88,27 +88,27 @@ if "run" in st.session_state and st.session_state.run:
 
 
     df_filtered = df[
-        (df["Date"] >= pd.to_datetime(start_date)) &
+        (df["Date"] >= pd.to_datetime(start_date)) &                                # Filter data
         (df["Date"] <= pd.to_datetime(end_date))
     ].copy()
 
-    if len(df_filtered) < 20:
+    if len(df_filtered) < 20:                                                           # Exception handling
         st.warning("Selected range too short for reliable analysis.")
         st.stop()
 
     # Recompute analytics on filtered data
-    returns = log_returns(df_filtered)
-    report = generate_report_data(df_filtered)
+    returns = log_returns(df_filtered)                                          # Calculate returns
+    report = generate_report_data(df_filtered)                                      # Generate report
 
 
-    st.divider()
+    st.divider()                                                            # Puts a line between sections
     st.subheader("Data Summary")
     st.write(f"**Start Date:** {report['start_date']}")
     st.write(f"**End Date:** {report['end_date']}")
     st.write(f"**Observations:** {report['observations']}")
     st.write(f"**Last Close Price:** {report['last_price']:.2f}")
     st.subheader(" Price History")
-    st.line_chart(df_filtered.set_index("Date")["Close"])
+    st.line_chart(df_filtered.set_index("Date")["Close"])                       # Plot price history
 
 
 
@@ -119,7 +119,7 @@ if "run" in st.session_state and st.session_state.run:
     st.write(f"Skewness: {report['skewness']:.2f}")
     st.write(f"Kurtosis: {report['kurtosis']:.2f}")
     st.subheader("Return Distribution")
-    fig_dist = plot_return_distributions(returns)
+    fig_dist = plot_return_distributions(returns)                               # Plot return distribution                      
     st.pyplot(fig_dist)
 
 
@@ -165,7 +165,7 @@ if "run" in st.session_state and st.session_state.run:
         roll_sharpe = rolling_sharpe_ratio(returns)
 
         st.line_chart({
-            "Rolling Volatility": roll_vol,
+            "Rolling Volatility": roll_vol,                         # Plot rolling volatility
             "Rolling Sharpe": roll_sharpe
         })
     else:
@@ -183,7 +183,7 @@ if "run" in st.session_state and st.session_state.run:
     st.write(f"Worst 5% Outcome: {report['mc_worst_5']:.2f}")
     st.write(f"Best 95% Outcome: {report['mc_best_95']:.2f}")
     st.subheader("Monte Carlo Price Paths")
-    fig_mc = plot_monte_carlo_paths(
+    fig_mc = plot_monte_carlo_paths(                                # Plot price paths
         report["mc_paths"],  # see note below
         n_paths_to_plot=100
     )

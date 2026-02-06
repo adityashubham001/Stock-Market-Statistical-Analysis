@@ -15,7 +15,10 @@ def plot_return_distributions(returns, bins=50):                # This function 
     df, loc, scale = stats.t.fit(r)                         # Fit Student-t distribution                    
 
     # Prepare data for plotting
-    q_low, q_high = np.percentile(r, [1, 99])
+    
+    # Use percentile range to avoid extreme outliers dominating the plot
+    
+    q_low, q_high = np.percentile(r, [1, 99])                   #   
     x = np.linspace(q_low, q_high, 500)
                 
 
@@ -27,14 +30,14 @@ def plot_return_distributions(returns, bins=50):                # This function 
 
     # Plot histogram & PDFs
     ax.hist(r, bins=bins, density=True, alpha=0.5, label="Returns") # Histogram of returns                  
-    ax.plot(
-        x, pdf_normal, linewidth=2,
-        label=f"Normal (μ={mu:.4f}, σ={sigma:.4f})"
+    ax.plot(                                                                # Plot PDFs 
+        x, pdf_normal, linewidth=2,                                         # PDF of normal distribution
+        label=f"Normal (μ={mu:.4f}, σ={sigma:.4f})"                         
     )
 
-    ax.plot(
-        x, pdf_t, linewidth=2,
-        label=f"Student-t (df={df:.1f})"
+    ax.plot(                                                    #   PDF of Student-t distribution
+        x, pdf_t, linewidth=2,                        
+        label=f"Student-t (df={df:.1f})"                        
     )
         
 
@@ -42,8 +45,8 @@ def plot_return_distributions(returns, bins=50):                # This function 
     ax.set_title("Return Distribution: Normal vs Student-t")            
     ax.set_xlabel("Returns")
     ax.set_ylabel("Density")
-    ax.legend()
-    ax.grid(True)
+    ax.legend()                             # Add legend 
+    ax.grid(True)                           # Add grid
 
     fig.tight_layout()
 

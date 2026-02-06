@@ -26,29 +26,29 @@ from analysis.distributions import compare_distributions
 from analysis.monte_carlo import monte_carlo_student_t
 
 
-def run_console_dashboard(df: pd.DataFrame, symbol: str):           # Console-based dashboard
+def run_console_dashboard(df: pd.DataFrame, symbol: str):           # Function to run the console dashboard
 
-    returns = log_returns(df)                        # Calculate log returns
+    returns = log_returns(df)                        # Calculate log returns of stock data 
 
     # =========================
     # BASIC INFO
     # =========================
     start_date = df["Date"].iloc[0].date()      # Start date of data 
-    end_date = df["Date"].iloc[-1].date()       # End date of data
+    end_date = df["Date"].iloc[-1].date()       # End date of data 
 
-    last_price = df["Close"].iloc[-1]      # Last closing price
-    n_obs = len(returns)                     # Number of observations
+    last_price = df["Close"].iloc[-1]      # Last closing price of stock
+    n_obs = len(returns)                     # Number of observations in returns
 
 
     ################## MOMENTS & RETURN STATS ##################
-    stats = moments(returns)                     # Statistical moments
-    ann_ret = annualized_return(returns)    # Annualized return
-    ann_vol = annualized_volatility(returns)    # Annualized volatility
+    stats = moments(returns)                     # Statistical moments of returns
+    ann_ret = annualized_return(returns)    # Annualized return 
+    ann_vol = annualized_volatility(returns)    # Annualized volatility 
 
     
     ################## RISK METRICS ######################
 
-    sharpe = sharpe_ratio(returns)           # Sharpe ratio
+    sharpe = sharpe_ratio(returns)           # Sharpe ratio 
     calmar = calmar_ratio(returns)      # Calmar ratio
     max_dd = max_drawdown(returns)           
 
@@ -57,14 +57,14 @@ def run_console_dashboard(df: pd.DataFrame, symbol: str):           # Console-ba
 
     downside_dev = downside_deviation(returns)  # Downside deviation
 
-    prob_loss_2 = prob_large_loss(returns, -0.02)   # P(Return ≤ -2%)   
+    prob_loss_2 = prob_large_loss(returns, -0.02)   # P(Return ≤ -2%)    
     prob_loss_5 = prob_large_loss(returns, -0.05)   # P(Return ≤ -5%)
     prob_loss_10 = prob_large_loss(returns, -0.10)  # P(Return ≤ -10%)
 
     # =========================
     # ROLLING METRICS (SUMMARY)
     # =========================
-    roll_vol = rolling_volatility(returns)      # Rolling volatility
+    roll_vol = rolling_volatility(returns)      # Rolling volatility 
     roll_sharpe = rolling_sharpe_ratio(returns)  # Rolling Sharpe ratio
     roll_dd = rolling_max_drawdown(returns)    # Rolling max drawdown
     roll_calmar = rolling_calmar_ratio(returns)  # Rolling Calmar ratio
@@ -77,7 +77,7 @@ def run_console_dashboard(df: pd.DataFrame, symbol: str):           # Console-ba
    
     ####################### MONTE CARLO ###########################
 
-    paths = monte_carlo_student_t(
+    paths = monte_carlo_student_t(                  # Monte Carlo simulation of returns
         returns=returns,
         start_price=last_price,
         n_days=252,

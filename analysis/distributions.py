@@ -67,41 +67,38 @@ def bic(log_likelihood: float, num_params: int, n_obs: int) -> float:
     return np.log(n_obs) * num_params - 2 * log_likelihood
 
 
-def compare_distributions(returns: pd.Series) -> pd.DataFrame:
-    """
-    Compare Normal vs Student-t using AIC and BIC.
-    """
-    r = returns.dropna()
-    n = len(r)
+def compare_distributions(returns: pd.Series) -> pd.DataFrame:                  # This function compares the goodness of fit of normal and Student-t distributions
+    r = returns.dropna()                                                            # Clean the returns
+    n = len(r)                                                                      # Number of observations
 
     # Normal
-    normal_params = fit_normal(r)
-    ll_norm = log_likelihood_normal(
-        r,
+    normal_params = fit_normal(r)                                               # Fit normal distribution
+    ll_norm = log_likelihood_normal(                                            # Calculate log-likelihood
+        r,                                                      
         normal_params["mu"],
         normal_params["sigma"]
     )
 
     # Student-t
-    t_params = fit_student_t(r)
-    ll_t = log_likelihood_student_t(
+    t_params = fit_student_t(r)                                                 # Fit Student-t distribution
+    ll_t = log_likelihood_student_t(                                            # Calculate log-likelihood
         r,
         t_params["df"],
         t_params["loc"],
         t_params["scale"]
     )
 
-    results = pd.DataFrame({
-        "Distribution": ["Normal", "Student-t"],
-        "LogLikelihood": [ll_norm, ll_t],
-        "AIC": [
-            aic(ll_norm, num_params=2),
-            aic(ll_t, num_params=3)
+    results = pd.DataFrame({                                                        # Create DataFrame
+        "Distribution": ["Normal", "Student-t"],                                    # List of distributions
+        "LogLikelihood": [ll_norm, ll_t],                                           # List of log-likelihood
+        "AIC": [                                                                # List of AIC
+            aic(ll_norm, num_params=2),                                             
+            aic(ll_t, num_params=3)                                                     
         ],
-        "BIC": [
+        "BIC": [                                                                # List of BIC
             bic(ll_norm, num_params=2, n_obs=n),
             bic(ll_t, num_params=3, n_obs=n)
         ]
     })
 
-    return results.sort_values("AIC")
+    return results.sort_values("AIC")                                                   # Sort by AIC
